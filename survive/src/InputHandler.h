@@ -19,17 +19,17 @@ struct InputData
 
 class GameInput
 {
-public:
-    GameInput(Game* pGame, Player* pPlayer);
-    ~GameInput();
-    
-    void update(float deltaTime);
-    void onKeyPressed(sf::Keyboard::Key key);
-    void onKeyReleased(sf::Keyboard::Key key);
-    
-    
-private:
-    InputData m_inputData;
-    Game* m_pGame;
-    Player* m_pPlayer;
+	public:
+		GameInput(Game* pGame, Player* pPlayer);
+		~GameInput();
+
+		void update(float deltaTime);
+		void onKeyPressed(sf::Keyboard::Key key);
+		void onKeyReleased(sf::Keyboard::Key key);
+
+
+	private:
+		InputData m_inputData;
+		Game* m_pGame;
+		Player* m_pPlayer;
 };

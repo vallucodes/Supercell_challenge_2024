@@ -6,12 +6,12 @@ GameInput::GameInput(Game* pGame, Player* pPlayer) :
     m_pGame(pGame), m_pPlayer(pPlayer)
 {
 
-    
+
 }
 
 GameInput::~GameInput()
 {
-    
+
 }
 
 void GameInput::update(float deltaTime)
@@ -23,7 +23,7 @@ void GameInput::update(float deltaTime)
 
     if (m_inputData.m_space)
     {
-        m_pPlayer->attack();
+        m_pPlayer->attack(deltaTime);
     }
 }
 

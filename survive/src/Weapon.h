@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Rectangle.h"
+#include "Constants.h"
 
 class Weapon : public Rectangle
 {
@@ -14,7 +15,10 @@ public:
 
     virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
+	float getTimer();
+
 private:
+	float m_weaponHeight = WeaponHeight;
     bool m_isActive = false;
     float m_timer = 0.0f;
 };
