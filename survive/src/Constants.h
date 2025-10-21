@@ -9,11 +9,16 @@ const float PlayerSpeed = 255.0f;
 
 const float VampireHeight = 32.0f;
 const float VampireWidth = 32.0f;
-const float VampireSpeed = 1500.0f;
+const float VampireSpeed = 150.0f;
 
 const float WeaponHeight = 7.0f;
-const float WeaponWidth = 100.0f;
+const float WeaponWidth = 30.0f;
 const float WeaponActiveTime = 0.55f;
 
 const float ItemHeight = 30.0f;
 const float ItemWidth = 30.0f;
+
+const float ProjectileHeight = 7.0f;
+const float ProjectileWidth = 7.0f;
+const float ProjectileSpeed = 500.0f;
+const float ProjectileRadius = 5.0f;

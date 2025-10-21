@@ -21,10 +21,11 @@ void GameInput::update(float deltaTime)
         m_pPlayer->move(m_inputData, deltaTime);
     }
 
-	if (m_inputData.hasMouseInputs())
-    {
-        m_pGame->itemSpawner(m_inputData, deltaTime);
-    }
+	// Item spawning by hand
+	// if (m_inputData.hasMouseInputs())
+    // {
+    //     m_pGame->itemSpawner(m_inputData, deltaTime);
+    // }
 
     if (m_inputData.m_space)
     {
@@ -34,19 +35,19 @@ void GameInput::update(float deltaTime)
 
 void GameInput::onKeyPressed(sf::Keyboard::Key key)
 {
-    if (key == sf::Keyboard::Up)
+    if (key == sf::Keyboard::W)
     {
         m_inputData.m_movingUp = true;
     }
-    else if (key == sf::Keyboard::Down)
+    else if (key == sf::Keyboard::S)
     {
         m_inputData.m_movingDown = true;
     }
-    else if (key == sf::Keyboard::Left)
+    else if (key == sf::Keyboard::A)
     {
         m_inputData.m_movingLeft = true;
     }
-    else if (key == sf::Keyboard::Right)
+    else if (key == sf::Keyboard::D)
     {
         m_inputData.m_movingRight = true;
     }
@@ -58,19 +59,19 @@ void GameInput::onKeyPressed(sf::Keyboard::Key key)
 
 void GameInput::onKeyReleased(sf::Keyboard::Key key)
 {
-    if (key == sf::Keyboard::Up)
+    if (key == sf::Keyboard::W)
     {
         m_inputData.m_movingUp = false;
     }
-    else if (key == sf::Keyboard::Down)
+    else if (key == sf::Keyboard::S)
     {
         m_inputData.m_movingDown = false;
     }
-    else if (key == sf::Keyboard::Left)
+    else if (key == sf::Keyboard::A)
     {
         m_inputData.m_movingLeft = false;
     }
-    else if (key == sf::Keyboard::Right)
+    else if (key == sf::Keyboard::D)
     {
         m_inputData.m_movingRight = false;
     }
@@ -82,7 +83,7 @@ void GameInput::onKeyReleased(sf::Keyboard::Key key)
 
 void GameInput::onMousePressed(const sf::Event::MouseButtonEvent& but_event)
 {
-	std::cout << "button pressed: " << but_event.button << " x: " << but_event.x << " y: " << but_event.y << std::endl;
+	// std::cout << "button pressed: " << but_event.button << " x: " << but_event.x << " y: " << but_event.y << std::endl;
 	if (but_event.button == sf::Mouse::Left)
 	{
 		m_inputData.m_x = but_event.x;
@@ -91,19 +92,12 @@ void GameInput::onMousePressed(const sf::Event::MouseButtonEvent& but_event)
 	}
 }
 
-void GameInput::onMouseReleased(const sf::Event::MouseButtonEvent& but_event)
-{
-	// std::cout << "button released: " << but_event.button << " x: " << but_event.x << " y: " << but_event.y << std::endl;
-	if (but_event.button == sf::Mouse::Left)
-	{
-		m_inputData.m_x = 0;
-		m_inputData.m_y = 0;
-		m_inputData.m_leftClick = false;
-	}
-}
-
 void GameInput::setMousePosition(sf::Vector2f worldPos) {
 	// std::cout << "current pos: x: " << worldPos.x << " y: " << worldPos.y << std::endl;
 	m_inputData.m_xMousePos = worldPos.x;
 	m_inputData.m_yMousePos = worldPos.y;
+}
+
+InputData& GameInput::getInputdata() {
+	return m_inputData;
 }

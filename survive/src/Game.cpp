@@ -5,8 +5,6 @@
 #include <SFML/System.hpp>
 #include <iostream>
 
-
-
 Game::Game() :
     m_state(State::WAITING),
     m_pClock(std::make_unique<sf::Clock>()),
@@ -57,6 +55,7 @@ void Game::resetLevel()
 {
     m_pVampires.clear();
 	m_pItems.clear();
+	m_pProjectiles.clear();
 
     m_pPlayer->initialise();
     m_pClock->restart();
@@ -81,10 +80,11 @@ void Game::update(float deltaTime)
         case State::ACTIVE:
         {
             m_pGameInput->update(deltaTime);
-            m_pPlayer->update(deltaTime);
+            m_pPlayer->update(m_pGameInput->getInputdata(), deltaTime);
 
             // vampireSpawner(deltaTime);
 			// itemSpawner(deltaTime);
+			projectileCreator(*m_pGameInput);
             for (auto& temp : m_pVampires)
             {
                 temp->update(deltaTime);
@@ -92,6 +92,10 @@ void Game::update(float deltaTime)
 			for (auto& temp : m_pItems)
             {
                 temp->update(deltaTime);
+            }
+			for (auto& temp : m_pProjectiles)
+            {
+                temp->update(m_pGameInput->getInputdata(), deltaTime);
             }
 
             if (m_pPlayer->isDead())
@@ -121,6 +125,17 @@ void Game::update(float deltaTime)
         {
             std::swap(m_pItems[i], m_pItems.back());
             m_pItems.pop_back();
+            continue;
+        }
+        i++;
+    }
+	i = 0;
+    while (i < m_pProjectiles.size())
+    {
+        if (m_pProjectiles[i]->isKilled())
+        {
+            std::swap(m_pProjectiles[i], m_pProjectiles.back());
+            m_pProjectiles.pop_back();
             continue;
         }
         i++;
@@ -156,16 +171,17 @@ void Game::draw(sf::RenderTarget &target, sf::RenderStates states) const
 
     //  Draw world.
     for (auto& temp : m_pVampires)
-    {
         temp->draw(target, states);
-    }
-
+	// Draw items
 	for (auto& temp : m_pItems)
-    {
+		temp->draw(target, states);
+	// Draw bullets
+	for (auto& temp : m_pProjectiles)
+	{
+		// std::cout << "projectile. x: " << temp.get()->getPosition().x << " y: " << temp.get()->getPosition().y << std::endl;
 		temp->draw(target, states);
 	}
 }
-
 
 void Game::onKeyPressed(sf::Keyboard::Key key)
 {
@@ -181,10 +197,6 @@ void Game::onMousePressed(const sf::Event::MouseButtonEvent& but_event) {
 	m_pGameInput->onMousePressed(but_event);
 }
 
-void Game::onMouseReleased(const sf::Event::MouseButtonEvent& but_event) {
-	m_pGameInput->onMouseReleased(but_event);
-}
-
 void Game::setMousePosition(sf::Vector2f worldPos) {
 	m_pGameInput->setMousePosition(worldPos);
 }
@@ -192,6 +204,10 @@ void Game::setMousePosition(sf::Vector2f worldPos) {
 Player* Game::getPlayer() const
 {
     return m_pPlayer.get();
+}
+
+const std::vector<std::unique_ptr<Vampire>>& Game::getVampires() const {
+	return m_pVampires;
 }
 
 void Game::vampireSpawner(float deltaTime)
@@ -248,3 +264,24 @@ void Game::itemSpawner(InputData inputData, float deltaTime)
     m_itemCooldown = m_nextItemCooldown;
 }
 
+void Game::projectileCreator(GameInput& m_pGameInput)
+{
+    // if (m_itemCooldown > 0.0f)
+    // {
+    //     m_itemCooldown -= deltaTime;
+    //     return;
+    // }
+	if (!m_pGameInput.getInputdata().hasMouseInputs())
+		return;
+    // float randomXPos = rand() % ScreenWidth;
+    // float randomYPos = rand() % ScreenHeight;
+
+    float shootingXpos = m_pPlayer.get()->getPosition().x + (PlayerWidth / 2);
+    float shootingYpos = m_pPlayer.get()->getPosition().y + (PlayerHeight / 2);
+
+    sf::Vector2f spawnPosition = sf::Vector2f(shootingXpos, shootingYpos);
+	// std::cout << "shooting from: " << " x: " << shootingXpos << " y: " << shootingYpos << std::endl;
+    m_pProjectiles.push_back(std::make_unique<Projectile>(this, spawnPosition));
+
+	m_pGameInput.getInputdata().m_leftClick = false;
+}

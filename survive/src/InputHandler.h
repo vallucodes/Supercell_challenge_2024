@@ -34,8 +34,9 @@ class GameInput
 		void onKeyPressed(sf::Keyboard::Key key);
 		void onKeyReleased(sf::Keyboard::Key key);
 		void onMousePressed(const sf::Event::MouseButtonEvent& but_event);
-		void onMouseReleased(const sf::Event::MouseButtonEvent& but_event);
 		void setMousePosition(sf::Vector2f worldPos);
+
+		InputData& getInputdata();
 
 	private:
 		InputData m_inputData;

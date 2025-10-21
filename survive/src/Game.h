@@ -13,12 +13,14 @@
 #include "Rectangle.h"
 #include "Vampire.h"
 #include "Item.h"
+#include "Projectile.h"
 
 class Player;
 class Game;
 class GameInput;
 class Vampire;
 class Item;
+class Projectile;
 
 namespace sf { class Clock; }
 
@@ -45,22 +47,25 @@ class Game : public sf::Drawable
 		void onKeyPressed(sf::Keyboard::Key key);
 		void onKeyReleased(sf::Keyboard::Key key);
 		void onMousePressed(const sf::Event::MouseButtonEvent& but_event);
-		void onMouseReleased(const sf::Event::MouseButtonEvent& but_event);
 		void setMousePosition(sf::Vector2f worldPos);
 
 		Player* getPlayer() const;
+		const std::vector<std::unique_ptr<Vampire>>& getVampires() const;
 		sf::Texture* getPlayerTexture() { return &m_playerTexture; }
 		sf::Texture* getVampireTexture() { return &m_vampTexture; }
 		sf::Texture* getItemTexture() { return &m_itemTexture; }
 
 		void vampireSpawner(float deltaTime);
 		void itemSpawner(InputData inputData, float deltaTime);
+		void projectileSpawner(InputData inputData, float deltaTime);
+		void projectileCreator(GameInput& m_pGameInput);
 
 	private:
 		std::unique_ptr<Player> m_pPlayer;
 
 		std::vector<std::unique_ptr<Vampire>> m_pVampires;
 		std::vector<std::unique_ptr<Item>> m_pItems;
+		std::vector<std::unique_ptr<Projectile>> m_pProjectiles;
 
 		State m_state;
 		std::unique_ptr<sf::Clock> m_pClock;
@@ -68,8 +73,10 @@ class Game : public sf::Drawable
 
 		float m_vampireCooldown = 0.0f;
 		float m_itemCooldown = 0.0f;
+		float m_projectileCooldown = 0.0f;
 		float m_nextItemCooldown = 1.0f;
 		float m_nextVampireCooldown = 2.0f;
+		float m_nextProjectileCooldown = 0.5f;
 		int m_spawnCount = 0;
 
 		sf::Font m_font;

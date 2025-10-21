@@ -26,7 +26,7 @@ class Player : public Rectangle
 		bool initialise();
 		void move(InputData inputData, float deltaTime);
 		void attack(float deltaTime);
-		void update(float deltaTime);
+		void update(InputData& inputData, float deltaTime);
 		virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
 		bool isDead() const {
@@ -42,7 +42,7 @@ class Player : public Rectangle
 		}
 
 	private:
-		float m_circleValue = 0.0f;
+		// float m_angle = 0.0f;
 		float m_wepCooldown = 0.0f;
 		bool    m_isDead = false;
 		eDirection m_direction = LEFT;

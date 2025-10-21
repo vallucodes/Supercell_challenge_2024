@@ -8,52 +8,6 @@
 
 #include "ResourceManager.h"
 
-// Define the grid size and color constants
-const unsigned int GRID_SIZE = 200;
-const sf::Color GRID_COLOR(100, 100, 100, 150); // Darker, slightly transparent gray
-
-void drawGrid(sf::RenderWindow& window)
-{
-    // Get the current view (camera) to align the grid properly
-    sf::View view = window.getView();
-    sf::Vector2f center = view.getCenter();
-    sf::Vector2f size = view.getSize();
-
-    // Calculate the visible bounds of the screen in world coordinates
-    float left = center.x - size.x / 2.0f;
-    float top = center.y - size.y / 2.0f;
-    float right = center.x + size.x / 2.0f;
-    float bottom = center.y + size.y / 2.0f;
-
-    // Use a VertexArray for efficient drawing of many lines
-    sf::VertexArray lines(sf::Lines);
-
-    // --- Vertical Lines ---
-    // Start the grid alignment at the nearest GRID_SIZE multiple to the left edge
-    int startX = static_cast<int>(std::floor(left / GRID_SIZE)) * GRID_SIZE;
-
-    for (int x = startX; x <= right; x += GRID_SIZE)
-    {
-        // Line from (x, top_of_view) to (x, bottom_of_view)
-        lines.append(sf::Vertex(sf::Vector2f(static_cast<float>(x), top), GRID_COLOR));
-        lines.append(sf::Vertex(sf::Vector2f(static_cast<float>(x), bottom), GRID_COLOR));
-    }
-
-    // --- Horizontal Lines ---
-    // Start the grid alignment at the nearest GRID_SIZE multiple to the top edge
-    int startY = static_cast<int>(std::floor(top / GRID_SIZE)) * GRID_SIZE;
-
-    for (int y = startY; y <= bottom; y += GRID_SIZE)
-    {
-        // Line from (left_of_view, y) to (right_of_view, y)
-        lines.append(sf::Vertex(sf::Vector2f(left, static_cast<float>(y)), GRID_COLOR));
-        lines.append(sf::Vertex(sf::Vector2f(right, static_cast<float>(y)), GRID_COLOR));
-    }
-
-    // Draw all the lines at once
-    window.draw(lines);
-}
-
 int main(int argc, char* argv[])
 {
 	// ResourceManager Must be Instantiated here -- DO NOT CHANGE
@@ -99,9 +53,6 @@ int main(int argc, char* argv[])
 					pGame->onMousePressed(correctedEvent);
 					break;
 				}
-				case sf::Event::MouseButtonReleased:
-					pGame->onMouseReleased(event.mouseButton);
-					break;
 
 				case sf::Event::MouseMoved:
 				{
@@ -123,7 +74,6 @@ int main(int argc, char* argv[])
 		window.clear(sf::Color::Black);
 
 		window.draw(*pGame.get());
-		drawGrid(window);
 
 		// end the current frame
 		window.display();

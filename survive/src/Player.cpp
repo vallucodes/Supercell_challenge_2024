@@ -4,6 +4,7 @@
 #include "Constants.h"
 #include <vector>
 #include <iostream>
+#include <cmath>
 #include "Game.h"
 
 Player::Player(Game* pGame) :
@@ -41,8 +42,8 @@ void Player::move(InputData inputData, float deltaTime)
     sf::Transformable::move(sf::Vector2f(xSpeed, ySpeed));
     setPosition(std::clamp(getPosition().x, 0.0f, (float)ScreenWidth - PlayerWidth), std::clamp(getPosition().y, 0.0f, (float)ScreenHeight - PlayerHeight));
 
-	std::cout << "x: " << std::clamp(getPosition().x, 0.0f, (float)ScreenWidth - PlayerWidth)
-		<< "y: " << std::clamp(getPosition().y, 0.0f, (float)ScreenHeight - PlayerHeight - 190) << std::endl;
+	// std::cout << "x: " << std::clamp(getPosition().x, 0.0f, (float)ScreenWidth - PlayerWidth)
+	// 	<< "y: " << std::clamp(getPosition().y, 0.0f, (float)ScreenHeight - PlayerHeight) << std::endl;
     if (inputData.m_movingLeft && !inputData.m_movingRight)
         m_direction = LEFT;
     else if (!inputData.m_movingLeft && inputData.m_movingRight)
@@ -61,23 +62,26 @@ void Player::attack(float deltaTime)
 	}
 }
 
-void Player::update(float deltaTime)
+void Player::update(InputData& inputData, float deltaTime)
 {
     sf::Vector2f weaponSize = m_pWeapon->getSize();
-	m_circleValue = (m_pWeapon->getTimer() / WeaponActiveTime) * 360;
-	// std::cout << m_circleValue << std::endl;
+	float angleRad = std::atan2((inputData.m_yMousePos - m_sprite.getPosition().y - PlayerHeight / 2), (inputData.m_xMousePos - m_sprite.getPosition().x - PlayerWidth / 2));
+	float angleDeg = angleRad * 180.f / M_PI;
+	if (angleDeg < 0)
+    	angleDeg += 360.0f;
+	// std::cout << angleDeg << std::endl;
 	m_wepCooldown += deltaTime;
     m_sprite.setPosition(getPosition());
 	sf::Vector2f weaponPos = getCenter();
 	m_pWeapon->setPosition(weaponPos);
 
-	m_pWeapon->setRotation(m_circleValue);
+	m_pWeapon->setRotation(angleDeg);
 
-    m_pWeapon->update(deltaTime);
+	m_pWeapon->update(deltaTime);
 }
 
 void Player::draw(sf::RenderTarget &target, sf::RenderStates states) const
 {
-    Rectangle::draw(target, states);
-    m_pWeapon->draw(target, states);
+	Rectangle::draw(target, states);
+	m_pWeapon->draw(target, states);
 }
