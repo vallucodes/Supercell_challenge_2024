@@ -82,8 +82,8 @@ void Game::update(float deltaTime)
             m_pGameInput->update(deltaTime);
             m_pPlayer->update(m_pGameInput->getInputdata(), deltaTime);
 
-            // vampireSpawner(deltaTime);
-			// itemSpawner(deltaTime);
+            vampireSpawner(deltaTime);
+			itemSpawner(deltaTime);
 			projectileCreator(*m_pGameInput);
             for (auto& temp : m_pVampires)
             {
@@ -243,7 +243,7 @@ void Game::vampireSpawner(float deltaTime)
     m_vampireCooldown = m_nextVampireCooldown;
 }
 
-void Game::itemSpawner(InputData inputData, float deltaTime)
+void Game::itemSpawner(float deltaTime)
 {
     if (m_itemCooldown > 0.0f)
     {
@@ -251,14 +251,14 @@ void Game::itemSpawner(InputData inputData, float deltaTime)
         return;
     }
 
-    // float randomXPos = rand() % ScreenWidth;
-    // float randomYPos = rand() % ScreenHeight;
+    float randomXPos = rand() % ScreenWidth;
+    float randomYPos = rand() % ScreenHeight;
 
-    float randomXPos = inputData.m_x - ItemWidth / 2 + 3;
-    float randomYPos = inputData.m_y - ItemHeight / 2 + 3;
+    // float randomXPos = inputData.m_x - ItemWidth / 2 + 3;
+    // float randomYPos = inputData.m_y - ItemHeight / 2 + 3;
 
     sf::Vector2f spawnPosition = sf::Vector2f(randomXPos, randomYPos);
-	std::cout << "puttign item at: " << " x: " << randomXPos << " y: " << randomYPos << std::endl;
+	// std::cout << "puttign item at: " << " x: " << randomXPos << " y: " << randomYPos << std::endl;
     m_pItems.push_back(std::make_unique<Item>(this, spawnPosition));
 
     m_itemCooldown = m_nextItemCooldown;
@@ -273,8 +273,6 @@ void Game::projectileCreator(GameInput& m_pGameInput)
     // }
 	if (!m_pGameInput.getInputdata().hasMouseInputs())
 		return;
-    // float randomXPos = rand() % ScreenWidth;
-    // float randomYPos = rand() % ScreenHeight;
 
     float shootingXpos = m_pPlayer.get()->getPosition().x + (PlayerWidth / 2);
     float shootingYpos = m_pPlayer.get()->getPosition().y + (PlayerHeight / 2);

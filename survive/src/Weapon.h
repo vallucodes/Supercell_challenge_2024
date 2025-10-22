@@ -19,6 +19,6 @@ public:
 
 private:
 	float m_weaponHeight = WeaponHeight;
-    bool m_isActive = false;
+    bool m_isActive = true;
     float m_timer = 0.0f;
 };

@@ -36,6 +36,7 @@ void Projectile::update(InputData inputdata, float deltaTime)
 		pVampire->setIsKilled(true);
 		setIsKilled(true);
 	}
+	
 
 	if (!m_directionSet)
 	{
