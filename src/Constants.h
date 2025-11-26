@@ -1,7 +1,7 @@
 #pragma once
 
-const int ScreenWidth = 1600;
-const int ScreenHeight = 1000;
+const int ScreenWidth = 800;
+const int ScreenHeight = 500;
 
 const float PlayerHeight = 55.0f;
 const float PlayerWidth = 55.0f;
@@ -25,3 +25,6 @@ const float ProjectileRadius = 5.0f;
 
 const float PowerupRadius = 5.0f;
 const int	MaxPowerUps = 5;
+
+const float HealthWith = 55.0f;
+const float HealthHeight = 3.0f;

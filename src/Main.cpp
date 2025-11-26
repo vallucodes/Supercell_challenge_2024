@@ -55,14 +55,12 @@ int main(int argc, char* argv[])
 					pGame->onMousePressed(correctedEvent);
 					break;
 				}
-
 				case sf::Event::MouseMoved:
 				{
 					sf::Vector2i pixelPos(event.mouseMove.x, event.mouseMove.y);
 					sf::Vector2f worldPos = window.mapPixelToCoords(pixelPos);
 					pGame->setMousePosition(worldPos);
 				}
-
 				default:
 					break;
 			}

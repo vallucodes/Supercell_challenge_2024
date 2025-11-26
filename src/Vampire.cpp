@@ -15,6 +15,7 @@ Vampire::Vampire(Game* game, sf::Vector2f position) :
     setOrigin(sf::Vector2f(0.0f, 0.0f));
     setIsKilled(false);
 
+	m_health = 100;
     m_sprite.setTexture(*m_pGame->getVampireTexture());
     m_sprite.setScale(2.0f, 2.0f);
 }
@@ -33,7 +34,15 @@ void Vampire::update(float deltaTime)
     }
 
     if (collidesWith(pPlayer))
-        pPlayer->setIsDead(true);
+	{
+		if (pPlayer->getHealth() > 0)
+		{
+			pPlayer->getHealth() -= 19;
+			setIsKilled(true);
+		}
+		if (pPlayer->getHealth() <= 0)
+			pPlayer->setIsDead(true);
+	}
 
     sf::Vector2f playerCenter = pPlayer->getCenter();
     sf::Vector2f direction = VecNormalized(playerCenter - getCenter());
@@ -41,3 +50,10 @@ void Vampire::update(float deltaTime)
     sf::Transformable::move(direction);
     m_sprite.setPosition(getPosition());
 }
+
+void Vampire::draw(sf::RenderTarget &target, sf::RenderStates states) const
+{
+	// drawHealthbar(target, states);
+	Rectangle::draw(target, states);
+}
+

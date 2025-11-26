@@ -9,7 +9,6 @@ Projectile::Projectile(Game* game, sf::Vector2f position, sf::Color color, sf::V
 {
 	setColor(color);
     setPosition(position);
-	// std::cout << "saving dir: " << " x: " << direction.x << " y: " << direction.y << std::endl;
 	m_direction = direction;
     setOrigin(sf::Vector2f(0.0f + ProjectileRadius, 0.0f + ProjectileRadius));
     setIsKilled(false);
@@ -38,7 +37,6 @@ void Projectile::update(InputData inputdata, float deltaTime)
 		setIsKilled(true);
 	}
 
-	// 	std::cout << "m_direction x:" << m_direction.x << " y: " << m_direction.y << std::endl;
 	sf::Vector2f velocity = ProjectileSpeed * deltaTime * m_direction;
 	sf::Transformable::move(velocity);
 	m_sprite.setPosition(getPosition());

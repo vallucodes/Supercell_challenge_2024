@@ -83,7 +83,6 @@ void GameInput::onKeyReleased(sf::Keyboard::Key key)
 
 void GameInput::onMousePressed(const sf::Event::MouseButtonEvent& but_event)
 {
-	// std::cout << "button pressed: " << but_event.button << " x: " << but_event.x << " y: " << but_event.y << std::endl;
 	if (but_event.button == sf::Mouse::Left)
 	{
 		m_inputData.m_x = but_event.x;
@@ -99,7 +98,6 @@ void GameInput::onMousePressed(const sf::Event::MouseButtonEvent& but_event)
 }
 
 void GameInput::setMousePosition(sf::Vector2f worldPos) {
-	// std::cout << "current pos: x: " << worldPos.x << " y: " << worldPos.y << std::endl;
 	m_inputData.m_xMousePos = worldPos.x;
 	m_inputData.m_yMousePos = worldPos.y;
 }

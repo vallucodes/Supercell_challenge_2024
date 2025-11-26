@@ -61,6 +61,7 @@ void Game::resetLevel()
     m_pClock->restart();
 	m_nextVampireCooldown = 2;
 	m_vampireCooldown = 2;
+
 }
 
 void Game::update(float deltaTime)
@@ -84,7 +85,7 @@ void Game::update(float deltaTime)
 
             vampireSpawner(deltaTime);
 			itemSpawner(deltaTime);
-			projectileCreator(*m_pGameInput);
+			projectileCreator(*m_pGameInput, deltaTime);
 			ultiCreator(*m_pGameInput);
             for (auto& temp : m_pVampires)
             {
@@ -170,7 +171,7 @@ void Game::draw(sf::RenderTarget &target, sf::RenderStates states) const
     // Draw player.
     m_pPlayer->draw(target, states);
 
-    //  Draw world.
+    //  Draw vampires
     for (auto& temp : m_pVampires)
         temp->draw(target, states);
 	// Draw items
@@ -178,10 +179,7 @@ void Game::draw(sf::RenderTarget &target, sf::RenderStates states) const
 		temp->draw(target, states);
 	// Draw bullets
 	for (auto& temp : m_pProjectiles)
-	{
-		// std::cout << "projectile. x: " << temp.get()->getPosition().x << " y: " << temp.get()->getPosition().y << std::endl;
 		temp->draw(target, states);
-	}
 }
 
 void Game::onKeyPressed(sf::Keyboard::Key key)
@@ -256,19 +254,19 @@ void Game::itemSpawner(float deltaTime)
     float randomYPos = rand() % ScreenHeight;
 
     sf::Vector2f spawnPosition = sf::Vector2f(randomXPos, randomYPos);
-	// std::cout << "puttign item at: " << " x: " << randomXPos << " y: " << randomYPos << std::endl;
     m_pItems.push_back(std::make_unique<Item>(this, spawnPosition));
 
     m_itemCooldown = m_nextItemCooldown;
 }
 
-void Game::projectileCreator(GameInput& m_pGameInput)
+void Game::projectileCreator(GameInput& m_pGameInput, float deltaTime)
 {
-    // if (m_itemCooldown > 0.0f)
-    // {
-    //     m_itemCooldown -= deltaTime;
-    //     return;
-    // }
+    if (m_projectileCooldown > 0.0f)
+    {
+        m_projectileCooldown -= deltaTime;
+		m_pGameInput.getInputdata().m_leftClick = false;
+        return;
+    }
 	if (!m_pGameInput.getInputdata().m_leftClick)
 		return;
 
@@ -278,11 +276,10 @@ void Game::projectileCreator(GameInput& m_pGameInput)
 	sf::Vector2f spawnPosition = m_pPlayer->getCenter();
 	sf::Vector2f direction = VecNormalized(mousePosition - spawnPosition);
 
-	// std::cout << "normal dir: " << " x: " << direction.x << " y: " << direction.y << std::endl;
-
     m_pProjectiles.push_back(std::make_unique<Projectile>(this, spawnPosition, sf::Color::Red, direction));
 
 	m_pGameInput.getInputdata().m_leftClick = false;
+	m_projectileCooldown = m_nextProjectileCooldown;
 }
 
 sf::Vector2f rotateVector(sf::Vector2f dir, int angle) {
@@ -308,10 +305,6 @@ void Game::ultiCreator(GameInput& m_pGameInput)
 	sf::Vector2f spawnPosition = m_pPlayer->getCenter();
 	sf::Vector2f mousePosition = sf::Vector2f(mouseXpos, mouseYpos);
 	sf::Vector2f direction = VecNormalized(mousePosition - spawnPosition);
-
-	// std::cout << "normal dir: " << " x: " << direction.x << " y: " << direction.y << std::endl;
-
-	// std::cout << "shooting from: " << " x: " << shootingXpos << " y: " << shootingYpos << std::endl;
 
 	std::vector<sf::Vector2f> dirs;
 
@@ -366,14 +359,13 @@ void Game::ultiCreator(GameInput& m_pGameInput)
 				dirs.push_back(dir5);
 			}
 			break;
+			default:
+				break;
 		}
 	}
 
 	for (int i = 0; i < m_pPlayer.get()->getPowerUps(); i++)
-	{
-		// std::cout << "shooting dir: " << " x: " << dirs[i].x << " y: " << dirs[i].y << std::endl;
 		m_pProjectiles.push_back(std::make_unique<Projectile>(this, spawnPosition, sf::Color::Cyan, dirs[i]));
-	}
 
 	m_pPlayer.get()->getPowerUps() = 0;
 

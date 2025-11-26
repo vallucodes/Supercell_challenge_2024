@@ -20,6 +20,8 @@ bool Player::initialise()
     m_sprite.setTexture(*m_pGame->getPlayerTexture());
     m_sprite.setScale(3.5f, 3.5f);
     setIsDead(false);
+	m_powerUps = 0;
+	m_health = 100;
     setPosition(ScreenWidth / 2 - (PlayerWidth / 2), ScreenHeight / 2 - (PlayerHeight / 2));
     m_sprite.setPosition(getPosition());
     return true;
@@ -41,8 +43,6 @@ void Player::move(InputData inputData, float deltaTime)
     sf::Transformable::move(sf::Vector2f(xSpeed, ySpeed));
     setPosition(std::clamp(getPosition().x, 0.0f, (float)ScreenWidth - PlayerWidth), std::clamp(getPosition().y, 0.0f, (float)ScreenHeight - PlayerHeight));
 
-	// std::cout << "x: " << std::clamp(getPosition().x, 0.0f, (float)ScreenWidth - PlayerWidth)
-	// 	<< "y: " << std::clamp(getPosition().y, 0.0f, (float)ScreenHeight - PlayerHeight) << std::endl;
     if (inputData.m_movingLeft && !inputData.m_movingRight)
         m_direction = LEFT;
     else if (!inputData.m_movingLeft && inputData.m_movingRight)
@@ -67,9 +67,8 @@ void Player::update(InputData& inputData, float deltaTime)
 	float angleRad = std::atan2((inputData.m_yMousePos - m_sprite.getPosition().y - PlayerHeight / 2), (inputData.m_xMousePos - m_sprite.getPosition().x - PlayerWidth / 2));
 	float angleDeg = angleRad * 180.f / M_PI;
 	if (angleDeg < 0)
-    	angleDeg += 360.0f;
-	// std::cout << angleDeg << std::endl;
-	m_wepCooldown += deltaTime;
+        angleDeg += 360.0f;
+    m_wepCooldown += deltaTime;
     m_sprite.setPosition(getPosition());
 
 	sf::Vector2f weaponPos = getCenter();
@@ -80,33 +79,28 @@ void Player::update(InputData& inputData, float deltaTime)
 
 void Player::draw(sf::RenderTarget &target, sf::RenderStates states) const
 {
-	draw_powerups(target, states);
+	drawPowerups(target, states);
+	drawHealthbar(target, states);
 	Rectangle::draw(target, states);
 	m_pWeapon->draw(target, states);
 }
 
-void Player::draw_powerups(sf::RenderTarget &target, sf::RenderStates states) const {
+void Player::drawPowerups(sf::RenderTarget &target, sf::RenderStates states) const {
 
-	int distanceFromPlayer = 40;
+	int distanceFromPlayer = 50;
 	sf::Vector2f playerPos = getCenter();
 
-	// std::cout << "current pups: " << m_powerUps << std::endl;
 	for (int i = 0; i < m_powerUps; i++)
 	{
 		sf::CircleShape circle(PowerupRadius);
 
 		float angle = 360 / MaxPowerUps * i - 90;
-		if (angle != 0){
-			// std::cout << "angle: " << angle << std::endl;
-		}
 
 		float radians = angle * M_PI / 180.0f;
 
 		float offsetX = std::cos(radians) * distanceFromPlayer;
 		float offsetY = std::sin(radians) * distanceFromPlayer;
 
-		// std::cout << "X: " << offsetX << std::endl;
-		// std::cout << "Y: " << offsetY << std::endl;
 
 		circle.setFillColor(sf::Color::Cyan);
 		circle.setOrigin(sf::Vector2f(0.0f + PowerupRadius, 0.0f + PowerupRadius));
@@ -116,6 +110,23 @@ void Player::draw_powerups(sf::RenderTarget &target, sf::RenderStates states) co
 	}
 }
 
+void Player::drawHealthbar(sf::RenderTarget &target, sf::RenderStates states) const {
+
+	int distanceFromPlayer = 10;
+	sf::Vector2f playerPos = getPosition();
+
+	sf::RectangleShape bar(sf::Vector2f(HealthWith * (m_health / 100), HealthHeight));
+	bar.setFillColor(sf::Color::Red);
+	bar.setOrigin(sf::Vector2f(0.0f, 0.0f + HealthHeight));
+	bar.setPosition(playerPos.x, playerPos.y - distanceFromPlayer);
+	target.draw(bar);
+	Rectangle::draw(target, states);
+}
+
 int& Player::getPowerUps() {
 	return m_powerUps;
+}
+
+float& Player::getHealth() {
+	return m_health;
 }

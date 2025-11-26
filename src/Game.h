@@ -57,7 +57,7 @@ class Game : public sf::Drawable
 
 		void vampireSpawner(float deltaTime);
 		void itemSpawner(float deltaTime);
-		void projectileCreator(GameInput& m_pGameInput);
+		void projectileCreator(GameInput& m_pGameInput, float deltaTime);
 		void ultiCreator(GameInput& m_pGameInput);
 
 	private:
@@ -74,9 +74,9 @@ class Game : public sf::Drawable
 		float m_vampireCooldown = 0.0f;
 		float m_itemCooldown = 0.0f;
 		float m_projectileCooldown = 0.0f;
-		float m_nextItemCooldown = 2.0f;
-		float m_nextVampireCooldown = 2.0f;
-		float m_nextProjectileCooldown = 0.5f;
+		float m_nextItemCooldown = 5.0f;
+		float m_nextVampireCooldown = 1.0f;
+		float m_nextProjectileCooldown = 1.5f;
 		int m_spawnCount = 0;
 
 		sf::Font m_font;

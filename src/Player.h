@@ -28,8 +28,10 @@ class Player : public Rectangle
 		void attack(float deltaTime);
 		void update(InputData& inputData, float deltaTime);
 		virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
-		void draw_powerups(sf::RenderTarget &target, sf::RenderStates states) const;
+		void drawPowerups(sf::RenderTarget &target, sf::RenderStates states) const;
+		void drawHealthbar(sf::RenderTarget &target, sf::RenderStates states) const;
 		int& getPowerUps();
+		float& getHealth();
 
 		bool isDead() const {
 			return m_isDead;
@@ -44,6 +46,7 @@ class Player : public Rectangle
 		}
 
 	private:
+		float	m_health;
 		int		m_powerUps = 0;
 		float	m_wepCooldown = 0.0f;
 		bool	m_isDead = false;
